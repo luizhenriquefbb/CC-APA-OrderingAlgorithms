@@ -218,7 +218,17 @@ public class MyCollection {
         this.myCollection.set(e, pivot);
         return e;
     }
-        
+     
+    /**
+     * Main method: the object of study
+     */
+    public void heapSort(){
+        MaxHeap maxHeap = new MaxHeap(myCollection);
+        this.myCollection = maxHeap.heapSort();
+    }
+    
+    
+    
     @Override
     public String toString() {
         return "MyCollection{\n"
