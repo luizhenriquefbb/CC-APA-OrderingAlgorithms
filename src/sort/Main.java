@@ -9,8 +9,8 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        String fileToRead = "couting.txt";
-        //String fileToRead = "test.txt";
+       String fileToRead = "couting.txt";
+       //String fileToRead = "teste2.txt";
         
         MyCollection collection1 = new MyCollection(fileToRead);
         MyCollection collection2 = new MyCollection(fileToRead);

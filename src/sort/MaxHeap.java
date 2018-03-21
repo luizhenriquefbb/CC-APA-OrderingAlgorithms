@@ -60,10 +60,38 @@ public class MaxHeap {
     }
     
     public void heapify(){
-        this.heapify(0);
+         this.heapify(0);
+       //this.heapify(this.getHeapSize()/2);
     }
    
     private void heapify(int currentIndex){
+        int leftSonIndex = this.left(currentIndex);
+        int rightSonIndex = this.right(currentIndex);
+        int grt = currentIndex;
+        
+        int auxValue;
+        
+        if (leftSonIndex <= getHeapSize() && this.array.get(leftSonIndex)>(this.array.get(grt))) {
+            grt = leftSonIndex;
+        }
+        if (rightSonIndex <= getHeapSize() && this.array.get(rightSonIndex)>(this.array.get(grt))) {
+            grt = rightSonIndex;
+        }
+        if (grt != currentIndex) {
+//            swap(arr, i, grt);
+            //swap
+            auxValue = this.array.get(currentIndex);
+            this.array.set(currentIndex, this.array.get(grt));
+            this.array.set(grt, auxValue);
+            
+            heapify(grt);
+        }
+        
+        
+    }
+    
+    
+    private void heapify_old(int currentIndex){
         
         int leftSonIndex;
         int rightSonIndex;
@@ -75,6 +103,7 @@ public class MaxHeap {
         
         // go through entire array
         for (int index = currentIndex; index<this.getHeapSize()/2; index++){
+        //for (int index = currentIndex; index >= 0; index--){
         
             leftSonIndex = this.left(index);
             rightSonIndex = this.right(index);
