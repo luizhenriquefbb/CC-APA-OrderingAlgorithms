@@ -1,5 +1,6 @@
 package sort;
 
+import exceptions.NegativeNumberException;
 import fileManager.FileManager;
 import java.util.ArrayList;
 import java.util.List;
@@ -225,6 +226,137 @@ public class MyCollection {
     public void heapSort(){
         MaxHeap maxHeap = new MaxHeap(myCollection);
         this.myCollection = maxHeap.heapSort();
+    }
+    
+    /**
+     * Adapted from https://www.geeksforgeeks.org/counting-sort/
+     */
+    public void countingSort(){
+       
+        // array to be sorted in, this array is necessary
+        // when we sort object datatypes, if we don't, 
+        // we can sort directly into the input array     
+        int[] aux = new int[myCollection.size()];
+
+        // find the smallest and the largest value
+        int min = myCollection.get(0);
+        int max = myCollection.get(0);
+        for (int i = 1; i < myCollection.size(); i++) {
+            if (myCollection.get(i) < min) {
+                min = myCollection.get(i);
+            } else if (myCollection.get(i) > max) {
+                max = myCollection.get(i);
+            }
+        }
+
+        // init array of frequencies
+        int[] counts = new int[max - min + 1];
+
+        // init the frequencies
+        for (int i = 0; i < myCollection.size(); i++) {
+            counts[myCollection.get(i) - min]++;
+        }
+
+        // recalculate the array - create the array of occurences
+        counts[0]--;
+        for (int i = 1; i < counts.length; i++) {
+            counts[i] = counts[i] + counts[i - 1];
+        }
+
+        /*
+            Sort the array right to the left
+            1) Look up in the array of occurences the last occurence of the given value
+            2) Place it into the sorted array
+            3) Decrement the index of the last occurence of the given value
+            4) Continue with the previous value of the input array (goto set1), 
+               terminate if all values were already sorted
+         */
+        for (int i = myCollection.size() - 1; i >= 0; i--) {
+            aux[counts[myCollection.get(i) - min]--] = myCollection.get(i);
+        }
+
+        // update myCollection
+        myCollection.clear();
+        for (int i : aux){
+            myCollection.add(i);
+        }
+        
+    
+    }
+    
+    /**
+     * adpted from https://gist.github.com/yeison/5606963
+     * adpted from https://www.geeksforgeeks.org/radix-sort/
+     */
+    public void radixSort() throws NegativeNumberException{
+        // put lis into array
+        Integer[] arr = new Integer[myCollection.size()];
+        for (int i = 0; i<myCollection.size();i++){
+            arr[i] = myCollection.get(i);
+        }
+        
+        // Find the maximum number to know number of digits
+        int m = getMax();
+ 
+        // Do counting sort for every digit. Note that instead
+        // of passing digit number, exp is passed. exp is 10^i
+        // where i is current digit number
+        for (int exp = 1; m/exp > 0; exp *= 10)
+            auxCountingSort(arr, exp);
+        
+        // put array into list
+        for (int i = 0; i<myCollection.size();i++){
+            myCollection.set(i, arr[i]);
+        }
+    }
+    
+    private void auxCountingSort(Integer[] arr, int exp) throws NegativeNumberException{
+        int n = arr.length;
+        int output[] = new int[n]; // output array
+        int i;
+        int count[] = new int[10];
+        
+        
+
+        // Store count of occurrences in count[]
+        for (i = 0; i < n; i++) {
+            try{
+                count[(arr[i] / exp) % 10]++;
+            }catch (ArrayIndexOutOfBoundsException ex){
+                throw new NegativeNumberException(ex.getMessage());
+            }
+        }
+
+        // Change count[i] so that count[i] now contains
+        // actual position of this digit in output[]
+        for (i = 1; i < 10; i++) {
+            count[i] += count[i - 1];
+        }
+
+        // Build the output array
+        for (i = n - 1; i >= 0; i--) {
+            output[count[(arr[i] / exp) % 10] - 1] = arr[i];
+            count[(arr[i] / exp) % 10]--;
+        }
+
+        // Copy the output array to arr[], so that arr[] now
+        // contains sorted numbers according to curent digit
+        for (i = 0; i < n; i++) {
+            arr[i] = output[i];
+        }
+    }
+    
+    /**
+     * A utility function to get maximum value in arr[]
+     * @return int MAximun value of array
+     */
+    private int getMax()
+    {
+        int mx = myCollection.size();
+        for (Integer i : myCollection)
+            if (i > mx)
+                mx = i;
+        return mx;
     }
     
     
